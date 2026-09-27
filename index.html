@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Flat Scout">
+<meta name="theme-color" content="#F3F4F1">
+<title>Flat Scout</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 34 34'%3E%3Crect width='34' height='34' rx='9' fill='%232D5B83'/%3E%3Cpath d='M8 17.5 17 10l9 7.5V25a1 1 0 0 1-1 1h-5v-5.5h-6V26H9a1 1 0 0 1-1-1z' fill='%23fff'/%3E%3Ccircle cx='24.5' cy='10.5' r='3' fill='%23B8506F'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700&family=Young+Serif&display=swap">
+<style>
+:root{
+  --ground:#F3F4F1; --surface:#FFFFFF; --surface-2:#F6F7F4; --ink:#16202A; --muted:#5E6A74; --line:#E0E4DE; --line-strong:#C9CFC7;
+  --accent:#2D5B83; --accent-soft:#E3EBF3; --accent-ink:#FFFFFF;
+  --tom:#2D5B83; --tom-soft:#E3EBF3; --amber:#B8506F; --amber-soft:#F6E3E9;
+  --gem:#1E7A52; --gem-soft:#DDF1E6; --watch:#2A7A82; --watch-soft:#DCEFF0;
+  --maybe:#98620E; --maybe-soft:#F7ECD7; --reject:#A8412E; --reject-soft:#F6E1DC;
+  --shadow:0 1px 2px rgba(22,32,42,.06),0 4px 14px rgba(22,32,42,.05);
+  --display:"Young Serif",Georgia,"Times New Roman",serif;
+  --body:"Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#10151A; --surface:#182028; --surface-2:#1D262F; --ink:#E7ECEF; --muted:#9AA6B0; --line:#29333D; --line-strong:#3A4652;
+    --accent:#8EB6DB; --accent-soft:#1C2B3A; --accent-ink:#0F1822;
+    --tom:#8EB6DB; --tom-soft:#1C2B3A; --amber:#E891AC; --amber-soft:#3A2029;
+    --gem:#56C08F; --gem-soft:#15302A; --watch:#63BAC2; --watch-soft:#152E31;
+    --maybe:#E2A64B; --maybe-soft:#33271A; --reject:#E3806B; --reject-soft:#36201C;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.2);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#10151A; --surface:#182028; --surface-2:#1D262F; --ink:#E7ECEF; --muted:#9AA6B0; --line:#29333D; --line-strong:#3A4652;
+  --accent:#8EB6DB; --accent-soft:#1C2B3A; --accent-ink:#0F1822;
+  --tom:#8EB6DB; --tom-soft:#1C2B3A; --amber:#E891AC; --amber-soft:#3A2029;
+  --gem:#56C08F; --gem-soft:#15302A; --watch:#63BAC2; --watch-soft:#152E31;
+  --maybe:#E2A64B; --maybe-soft:#33271A; --reject:#E3806B; --reject-soft:#36201C;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.2);
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;padding-inline:16px;padding-block:0 56px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+a{color:var(--accent)}
+button,select,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;line-height:1.2;text-wrap:balance}
+h2{font-size:21px} h3{font-size:18px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+.label{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 5px}
+
+/* app bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--ground);margin-inline:-16px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.bar-in{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.brand svg{flex:none}
+.brand-text{display:flex;flex-direction:column;min-width:0}
+.brand-text b{font-family:var(--display);font-weight:400;font-size:20px;line-height:1.1}
+.brand-text span{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-strong);background:var(--surface);border-radius:999px;padding:5px 10px 5px 5px;cursor:pointer;font-weight:600;font-size:13.5px}
+.avatar{width:24px;height:24px;border-radius:50%;display:inline-grid;place-items:center;font-size:12px;font-weight:700;color:#fff;flex:none}
+.avatar.tom{background:var(--tom)} .avatar.amber{background:var(--amber)} .avatar.none{background:var(--line-strong);color:var(--ink)}
+:root[data-theme="dark"] .avatar.tom, :root[data-theme="dark"] .avatar.amber{color:#10151A}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .avatar.tom, :root:not([data-theme="light"]) .avatar.amber{color:#10151A} }
+.sync{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--maybe)}
+.dot.on{background:var(--gem)}
+@media (max-width:460px){.sync .txt{display:none}}
+
+/* hero */
+.hero{display:flex;flex-direction:column;gap:12px;padding-top:6px}
+.hero .headline{font-family:var(--display);font-size:22px;line-height:1.3;margin:0;text-wrap:pretty}
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 8px;display:flex;flex-direction:column;gap:2px;text-align:left;cursor:pointer}
+.kpi b{font-family:var(--mono);font-size:22px;font-weight:500;line-height:1.1}
+.kpi span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.kpi.gem b{color:var(--gem)} .kpi.watch b{color:var(--watch)} .kpi.maybe b{color:var(--maybe)} .kpi.liked b{color:var(--amber)} .kpi.reject b{color:var(--reject)}
+@media (max-width:520px){.kpis{grid-template-columns:repeat(4,minmax(0,1fr))} .kpi.reject{display:none} .kpi b{font-size:20px}}
+details.notes-box{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+details.notes-box summary{cursor:pointer;font-weight:600;font-size:14px}
+.notes{margin:8px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+.notes li::marker{color:var(--accent)}
+.banner{display:flex;gap:10px;align-items:flex-start;background:var(--maybe-soft);border-radius:12px;padding:10px 12px;font-size:13.5px}
+.banner b{font-weight:600}
+
+/* tabs + tools */
+.tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:1px solid var(--line-strong);background:var(--surface);padding:7px 13px;border-radius:999px;cursor:pointer;display:inline-flex;gap:6px;align-items:center;font-weight:600;font-size:14px}
+.tab .count{font-family:var(--mono);font-weight:500;color:var(--muted);font-size:12.5px}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.tab[aria-selected="true"] .count{color:var(--ground);opacity:.75}
+.tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+@media (max-width:560px){.tools{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.field{display:flex;flex-direction:column;gap:3px;min-width:0}
+.field label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.field select{appearance:none;background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%237a8590' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 10px center;border:1px solid var(--line-strong);border-radius:10px;padding:8px 26px 8px 10px;font-size:14px;width:100%}
+.result-line{font-size:13px;color:var(--muted)}
+.list{display:flex;flex-direction:column;gap:12px}
+
+/* card */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 14px 12px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow)}
+.card.gem{border-color:var(--gem)}
+.card.both{box-shadow:0 0 0 2px var(--amber) inset,var(--shadow)}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.spread{justify-content:space-between}
+.pill{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:3px 9px;border-radius:999px}
+.pill.gem{background:var(--gem-soft);color:var(--gem)} .pill.watch{background:var(--watch-soft);color:var(--watch)}
+.pill.maybe{background:var(--maybe-soft);color:var(--maybe)} .pill.reject{background:var(--reject-soft);color:var(--reject)}
+.pill.new{background:var(--accent-soft);color:var(--accent)}
+.pill.both{background:var(--amber-soft);color:var(--amber)}
+.score{font-family:var(--mono);font-size:12.5px;color:var(--muted);display:inline-flex;align-items:baseline;gap:2px}
+.score b{font-size:19px;font-weight:500;color:var(--ink)}
+.title{display:flex;flex-direction:column;gap:2px}
+.meta{font-size:13px;color:var(--muted)}
+.price{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.price-main b{font-family:var(--mono);font-size:25px;font-weight:500;line-height:1}
+.price-main span{font-size:12.5px;color:var(--muted);margin-left:4px}
+.cap{flex:1;min-width:140px;display:flex;flex-direction:column;gap:3px}
+.cap-bar{height:5px;border-radius:3px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden}
+.cap-fill{height:100%;background:var(--accent)} .cap-fill.over{background:var(--reject)}
+.cap small{font-size:11.5px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;padding:3px 9px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);white-space:nowrap}
+.energy{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:19px;padding:0 5px;border-radius:4px;font-family:var(--mono);font-weight:500;font-size:12px;color:#fff}
+.take{margin:0;font-size:14.5px}
+.actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;align-items:center;border-top:1px solid var(--line);padding-top:10px}
+.actions .btn{justify-content:center;padding:8px 6px}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-strong);background:var(--surface);border-radius:10px;padding:7px 11px;font-weight:600;font-size:13.5px;cursor:pointer;text-decoration:none;color:var(--ink)}
+.btn:hover{border-color:var(--ink)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.like[aria-pressed="true"]{background:var(--amber-soft);border-color:var(--amber);color:var(--amber)}
+.btn.like svg{flex:none}
+.likers{display:inline-flex;gap:3px;margin-left:2px}
+.likers .avatar{width:20px;height:20px;font-size:10.5px}
+.spacer{flex:1}
+.details{display:flex;flex-direction:column;gap:12px;padding-top:4px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+@media (max-width:520px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kv{background:var(--surface-2);border-radius:9px;padding:7px 9px;display:flex;flex-direction:column;gap:1px;min-width:0}
+.kv span{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.kv b{font-weight:600;font-size:13.5px;overflow-wrap:anywhere}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.two{grid-template-columns:1fr}}
+.ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px;font-size:14px}
+.ul li{display:grid;grid-template-columns:14px 1fr;gap:6px}
+.ul.pros li::before{content:"+";color:var(--gem);font-family:var(--mono)}
+.ul.cons li::before{content:"−";color:var(--reject);font-family:var(--mono)}
+.ul.ask li::before{content:"?";color:var(--accent);font-family:var(--mono)}
+.flagbox{background:var(--maybe-soft);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.flagbox p{margin:0;display:grid;grid-template-columns:14px 1fr;gap:6px}
+.flagbox p::before{content:"!";color:var(--maybe);font-family:var(--mono);font-weight:500}
+blockquote{margin:0;padding:6px 10px;border-left:3px solid var(--line-strong);font-size:13.5px;color:var(--muted);font-style:italic}
+.quotes{display:flex;flex-direction:column;gap:6px}
+.cash{display:grid;grid-template-columns:1fr auto;gap:4px 12px;font-size:13.5px;background:var(--surface-2);border-radius:10px;padding:10px 12px}
+.cash .tot{font-weight:700;border-top:1px solid var(--line);padding-top:4px}
+.cash span:nth-child(even){font-family:var(--mono);text-align:right}
+.notes-area{display:flex;flex-direction:column;gap:8px}
+.note-row{display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:start}
+textarea{width:100%;min-height:54px;border:1px solid var(--line-strong);border-radius:10px;padding:8px 10px;background:var(--surface);resize:vertical;font-size:14px}
+.note-read{font-size:14px;background:var(--surface-2);border-radius:10px;padding:8px 10px;min-height:38px}
+.saved{font-size:12px;color:var(--gem);min-height:16px}
+
+/* rejected */
+.rej{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.rej .reason{color:var(--reject);font-weight:600;font-size:13px}
+.rej p{margin:0;font-size:14px}
+
+/* share popover */
+.sheet-back{position:fixed;inset:0;background:rgba(10,15,20,.4);display:flex;align-items:flex-end;justify-content:center;z-index:50;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+.sheet{background:var(--surface);border-radius:18px;padding:18px;max-width:440px;width:100%;display:flex;flex-direction:column;gap:12px;box-shadow:0 12px 40px rgba(0,0,0,.25)}
+.sheet h3{font-size:19px}
+.sheet .btn{justify-content:center;padding:11px}
+.sheet input{border:1px solid var(--line-strong);border-radius:10px;padding:10px 12px;font-size:15px;background:var(--surface);width:100%}
+.pick{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pick button{display:flex;align-items:center;gap:8px;justify-content:center;padding:12px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface);cursor:pointer;font-weight:600}
+.pick button[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink) inset}
+.err{color:var(--reject);font-size:13px;min-height:18px;margin:0}
+
+/* brief */
+.block{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.block ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.table-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:600}
+td.nowrap{white-space:nowrap;font-family:var(--mono);font-size:13px}
+.chip.no{text-decoration:line-through;color:var(--muted)}
+.empty{color:var(--muted);text-align:center;padding:28px 16px;background:var(--surface);border:1px dashed var(--line-strong);border-radius:14px}
+footer{font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+footer p{margin:0}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--ground);padding:9px 14px;border-radius:10px;font-size:14px;z-index:60}
+@media (prefers-reduced-motion:no-preference){.btn,.tab,.kpi{transition:background-color .15s,border-color .15s,color .15s}}
+
+html,body{margin:0}
+[hidden]{display:none!important}
+body.locked{overflow:hidden}
+.sync{border:0;background:none;padding:6px 4px;cursor:pointer;font:inherit;color:var(--muted)}
+.sync .txt{font-variant-numeric:tabular-nums}
+.dot.bad{background:var(--reject)}
+@media (max-width:460px){.sync .txt{display:inline}.brand-text span{display:none}}
+.gate{position:fixed;inset:0;z-index:100;background:var(--ground);display:flex;align-items:center;justify-content:center;padding:24px 16px}
+.gate-card{width:100%;max-width:340px;display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center}
+.gate-card h1{font-size:30px}
+.gate-sync{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);margin:0}
+.pin{font-family:var(--mono);font-size:26px;letter-spacing:.3em;text-align:center;width:100%;max-width:240px;padding:12px;border:1px solid var(--line-strong);border-radius:12px;background:var(--surface);color:var(--ink)}
+.gate .btn.primary{width:100%;max-width:240px;justify-content:center;padding:12px;font-size:15px}
+.remember{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--muted)}
+.sync-rows{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:14px}
+.sync-rows span:nth-child(odd){color:var(--muted)}
+</style>
+</head>
+<body class="locked">
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <svg width="52" height="52" viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="9" fill="var(--accent)"/><path d="M8 17.5 17 10l9 7.5V25a1 1 0 0 1-1 1h-5v-5.5h-6V26H9a1 1 0 0 1-1-1z" fill="var(--accent-ink)"/><circle cx="24.5" cy="10.5" r="3" fill="var(--amber)"/></svg>
+    <h1>Flat Scout</h1>
+    <p class="gate-sync" id="gate-sync">Checking the latest update…</p>
+    <input id="pin" class="pin" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="off" maxlength="12" placeholder="••••••" aria-label="Access code">
+    <label class="remember"><input type="checkbox" id="pin-remember" checked> Remember on this phone</label>
+    <button class="btn primary" id="pin-go" type="button">Open</button>
+    <p class="err" id="pin-err" role="alert"></p>
+  </div>
+</div>
+<header class="bar">
+  <div class="bar-in">
+    <div class="brand">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="9" fill="var(--accent)"/><path d="M8 17.5 17 10l9 7.5V25a1 1 0 0 1-1 1h-5v-5.5h-6V26H9a1 1 0 0 1-1-1z" fill="var(--accent-ink)"/><circle cx="24.5" cy="10.5" r="3" fill="var(--amber)"/></svg>
+      <div class="brand-text"><b>Flat Scout</b><span>Luxembourg · move-in Jan 2027</span></div>
+    </div>
+    <button class="sync" id="sync" type="button" aria-label="Last update"><span class="dot" id="sync-dot"></span><span class="txt" id="sync-txt">…</span></button>
+    <button class="who" id="who-btn" type="button" aria-label="Switch person"><span class="avatar none" id="who-av">?</span><span id="who-name">Who?</span></button>
+  </div>
+</header>
+
+<main class="wrap" id="main">
+  <section class="hero" id="hero"><p class="muted">Loading today's scan…</p></section>
+  <div id="banner"></div>
+  <nav class="tabs" role="tablist" aria-label="Sections" id="tabs">
+    <button class="tab" role="tab" data-tab="top" aria-selected="true">Top picks <span class="count" id="c-top">–</span></button>
+    <button class="tab" role="tab" data-tab="maybe" aria-selected="false">Maybe <span class="count" id="c-maybe">–</span></button>
+    <button class="tab" role="tab" data-tab="liked" aria-selected="false">♥ Liked <span class="count" id="c-liked">–</span></button>
+    <button class="tab" role="tab" data-tab="rejected" aria-selected="false">Rejected <span class="count" id="c-rejected">–</span></button>
+    <button class="tab" role="tab" data-tab="brief" aria-selected="false">Our brief</button>
+  </nav>
+  <section id="tools" class="tools" aria-label="Filters">
+    <div class="field"><label for="f-zone">Area</label><select id="f-zone"><option value="">All areas</option></select></div>
+    <div class="field"><label for="f-type">Type</label><select id="f-type"><option value="">All types</option><option value="1-bed">1-bed</option><option value="2-bed">2-bed</option><option value="studio">Studio</option></select></div>
+    <div class="field"><label for="f-max">Max per month</label><select id="f-max"><option value="">Any</option><option value="1800">€1,800</option><option value="1900">€1,900</option><option value="2000">€2,000</option><option value="2100">€2,100</option><option value="2250">€2,250</option></select></div>
+    <div class="field"><label for="f-sort">Sort by</label><select id="f-sort"><option value="score">Best match</option><option value="price">Lowest price</option><option value="commute">Shortest commute</option><option value="size">Most space</option><option value="new">Newest</option></select></div>
+  </section>
+  <div class="result-line" id="result-line"></div>
+  <section class="list" id="list" role="tabpanel" aria-live="polite"></section>
+  <footer>
+    <p>The scan starts every morning at 07:40 Luxembourg time; the update is usually online by 08:30. Tap the time at the top to see when the last scan ran. Prices and facts are copied from the ads; always confirm with the agent before signing.</p>
+    <p>Commute times to work (route d'Esch) are rough estimates by public transport. Check exact routes on mobiliteit.lu.</p>
+  </footer>
+</main>
+
+<script src="config.js"></script>
+<script>
+(function(){
+  "use strict";
+  const CFG = window.FLATSCOUT || {};
+  const CAP = 2100;
+  const ENERGY = {"A++":"#0A6B36","A+":"#0B7A3E","A":"#2E8B3A","B":"#5E9E2A","C":"#9DAF1F","D":"#C9A20E","E":"#D9861A","F":"#D9621C","G":"#C8401F","H":"#A81E24","I":"#7E1520"};
+  const TIER = {gem:"Gem", watch:"Watch", maybe:"Maybe", reject:"Rejected"};
+  const PEOPLE = {tom:"Tom", amber:"Amber"};
+  const S = { data:null, tab:"top", who:null, reactions:{}, open:new Set(), mode:"local", fs:null, filters:{zone:"",type:"",max:"",sort:"score"} };
+
+  const $ = (s, el=document) => el.querySelector(s);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const eur = (n) => (typeof n === "number") ? "€" + n.toLocaleString("en-GB") : "–";
+  const store = { get(k, d){ try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch(e){ return d; } },
+                  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} } };
+  function toast(msg){ const t = document.createElement("div"); t.className = "toast"; t.setAttribute("role","status"); t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2200); }
+  function fmtDate(iso){ try { return new Date(iso + (iso.length === 10 ? "T12:00:00" : "")).toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"}); } catch(e){ return iso; } }
+  function commuteMin(c){ const m = String(c||"").match(/(\d+)/); return m ? +m[1] : 999; }
+
+  // Tier from score keeps old and new data consistent
+  function tierOf(l){
+    if (l.verdict === "reject") return "reject";
+    const s = +l.score || 0;
+    if (s >= 78) return "gem";
+    if (s >= 60) return "watch";
+    return "maybe";
+  }
+  function energyBadge(cls){
+    const c = String(cls || "?").toUpperCase(); const bg = ENERGY[c];
+    return bg ? `<span class="energy" style="background:${bg}" title="Energy class ${esc(c)}">${esc(c)}</span>` : `<span class="energy" style="background:#7A838B" title="Energy class not shown">?</span>`;
+  }
+  function av(p, small){ return `<span class="avatar ${p}" ${small?'':''} aria-hidden="true">${p==="tom"?"T":p==="amber"?"A":"?"}</span>`; }
+
+  // ---------- reactions ----------
+  function rx(id){ return S.reactions[id] || {likes:{}, notes:{}}; }
+  function likedBy(id){ const r = rx(id); return ["tom","amber"].filter(p => r.likes && r.likes[p]); }
+  async function toggleLike(id){
+    if (!S.who) { openWho(() => toggleLike(id)); return; }
+    const r = JSON.parse(JSON.stringify(rx(id)));
+    r.likes = r.likes || {}; r.likes[S.who] = !r.likes[S.who];
+    S.reactions[id] = r; render();
+    if (S.mode === "shared") {
+      try { await S.fs.save(id, {likes:{[S.who]: r.likes[S.who]}}); }
+      catch(e){ toast("Couldn't save the like. Check your connection."); }
+    } else store.set("fs-reactions", S.reactions);
+  }
+  let noteTimer = null;
+  function saveNote(id, text, statusEl){
+    clearTimeout(noteTimer);
+    noteTimer = setTimeout(async () => {
+      const r = JSON.parse(JSON.stringify(rx(id))); r.notes = r.notes || {}; r.notes[S.who] = text; S.reactions[id] = r;
+      if (S.mode === "shared") { try { await S.fs.save(id, {notes:{[S.who]: text}}); statusEl.textContent = "Saved for both of you"; } catch(e){ statusEl.textContent = "Not saved, check your connection"; } }
+      else { store.set("fs-reactions", S.reactions); statusEl.textContent = "Saved on this device"; }
+    }, 600);
+  }
+
+  // ---------- share ----------
+  async function shareListing(l){
+    const text = `${l.title} · ${l.zone} · ${eur(l.allIn)}/month all-in`;
+    if (navigator.share) { try { await navigator.share({title:l.title, text, url:l.url}); return; } catch(e){ if (e && e.name === "AbortError") return; } }
+    const back = document.createElement("div"); back.className = "sheet-back";
+    const wa = "https://wa.me/?text=" + encodeURIComponent(text + "\n" + l.url);
+    back.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-label="Share this flat">
+      <h3>Share this flat</h3><p class="muted" style="margin:0">${esc(text)}</p>
+      <a class="btn primary" href="${esc(wa)}" target="_blank" rel="noopener">Send on WhatsApp</a>
+      <button class="btn" type="button" id="copy-link">Copy link to the ad</button>
+      <input id="share-url" readonly value="${esc(l.url)}" aria-label="Link to the ad">
+      <button class="btn" type="button" id="close-sheet">Close</button></div>`;
+    document.body.appendChild(back);
+    const close = () => back.remove();
+    back.addEventListener("click", e => { if (e.target === back) close(); });
+    $("#close-sheet", back).addEventListener("click", close);
+    $("#copy-link", back).addEventListener("click", () => {
+      navigator.clipboard?.writeText(l.url).then(() => { toast("Link copied"); close(); }).catch(() => { const i = $("#share-url", back); i.focus(); i.select(); toast("Select the link and copy it"); });
+    });
+  }
+
+  // ---------- who ----------
+  function setWho(p){ S.who = p; store.set("fs-who", p); renderWho(); render(); }
+  function renderWho(){
+    $("#who-av").className = "avatar " + (S.who || "none"); $("#who-av").textContent = S.who === "tom" ? "T" : S.who === "amber" ? "A" : "?";
+    $("#who-name").textContent = S.who ? PEOPLE[S.who] : "Who?";
+  }
+  function openWho(after){
+    const back = document.createElement("div"); back.className = "sheet-back";
+    back.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-label="Who is using Flat Scout?">
+      <h3>Who's looking?</h3><p class="muted" style="margin:0">Your likes and notes are saved under your name.</p>
+      <div class="pick"><button type="button" data-p="tom" aria-pressed="${S.who==="tom"}">${av("tom")} Tom</button><button type="button" data-p="amber" aria-pressed="${S.who==="amber"}">${av("amber")} Amber</button></div></div>`;
+    document.body.appendChild(back);
+    back.addEventListener("click", e => { if (e.target === back) back.remove(); });
+    back.querySelectorAll("[data-p]").forEach(b => b.addEventListener("click", () => { setWho(b.dataset.p); back.remove(); if (after) after(); }));
+  }
+  $("#who-btn").addEventListener("click", () => openWho());
+  $("#sync").addEventListener("click", () => openSync());
+
+  // ---------- render ----------
+  function filtered(list){
+    const f = S.filters;
+    let out = list.filter(l => (!f.zone || l.zone === f.zone) && (!f.type || l.type === f.type) && (!f.max || (l.allIn || 0) <= +f.max));
+    const by = {
+      score: (a,b) => (b.score||0) - (a.score||0),
+      price: (a,b) => (a.allIn||9e9) - (b.allIn||9e9),
+      commute: (a,b) => commuteMin(a.commute) - commuteMin(b.commute) || (b.score||0) - (a.score||0),
+      size: (a,b) => (b.size||0) - (a.size||0),
+      new: (a,b) => String(b.firstSeen||"").localeCompare(String(a.firstSeen||"")) || (b.score||0) - (a.score||0),
+    }[f.sort] || ((a,b)=>0);
+    return out.sort(by);
+  }
+  function capMeter(l){
+    if (typeof l.allIn !== "number") return "";
+    const pct = Math.min(100, Math.round(l.allIn / CAP * 100)); const diff = CAP - l.allIn;
+    const label = diff > 0 ? `${eur(diff)} under your €2,100 cap` : diff === 0 ? "Exactly at your cap" : `${eur(-diff)} over your cap`;
+    return `<div class="cap"><div class="cap-bar" role="img" aria-label="${esc(label)}"><div class="cap-fill ${diff<0?"over":""}" style="width:${pct}%"></div></div><small>${esc(label)}${l.allInEstimated?" · charges estimated":""}</small></div>`;
+  }
+  const kv = (k, v) => `<div class="kv"><span>${esc(k)}</span><b>${v}</b></div>`;
+  const yn = (v) => v === true ? "Yes" : v === false ? "No" : "Not stated";
+
+  function card(l){
+    const t = tierOf(l), likers = likedBy(l.id), both = likers.length === 2, open = S.open.has(l.id);
+    const isNew = l.firstSeen === S.data?.reports?.[0]?.date;
+    const mine = S.who && likers.includes(S.who);
+    const r = rx(l.id);
+    const other = S.who === "tom" ? "amber" : S.who === "amber" ? "tom" : null;
+    return `<article class="card ${t}${both?" both":""}" id="card-${esc(l.id)}">
+      <div class="row spread">
+        <div class="row"><span class="pill ${t}">${TIER[t]}</span>${isNew?'<span class="pill new">New</span>':""}${both?'<span class="pill both">♥ Both</span>':""}</div>
+        <span class="score" title="Match score"><b>${esc(l.score)}</b>/100</span>
+      </div>
+      <div class="title"><h3>${esc(l.title)}</h3><span class="meta">${esc(l.zone)}${l.commute?` · ${esc(l.commute)} to work`:""} · ${esc(l.source)}</span></div>
+      <div class="price"><div class="price-main"><b>${eur(l.allIn)}</b><span>/month all-in</span></div>${capMeter(l)}</div>
+      <div class="chips">
+        <span class="chip mono">${esc(l.size)} m² · ${esc(l.type)}</span>
+        <span class="chip">${energyBadge(l.energy)} energy</span>
+        ${l.balcony && !/^(none|not stated)/i.test(l.balcony) ? `<span class="chip">☀ ${esc(l.balcony)}</span>` : `<span class="chip">No balcony info</span>`}
+        <span class="chip">${esc(l.available || "Date not stated")}</span>
+      </div>
+      ${l.headline ? `<p class="take">${esc(l.headline)}</p>` : ""}
+      <div class="actions">
+        <button class="btn like" type="button" data-act="like" data-id="${esc(l.id)}" aria-pressed="${mine?"true":"false"}">
+          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.3 3 4.5 6.7 4.5c2.1 0 3.6 1.2 5.3 3.1 1.7-1.9 3.2-3.1 5.3-3.1 3.7 0 5.8 3.8 4.3 7.3C19.5 16.4 12 21 12 21z" fill="${mine?"currentColor":"none"}" stroke="currentColor" stroke-width="2"/></svg>
+          ${mine ? "Liked" : "Like"}${likers.length ? `<span class="likers">${likers.map(p=>av(p,true)).join("")}</span>` : ""}
+        </button>
+        <button class="btn" type="button" data-act="share" data-id="${esc(l.id)}">Share</button>
+        <button class="btn" type="button" data-act="toggle" data-id="${esc(l.id)}" aria-expanded="${open}">${open ? "Less" : "Details"}</button>
+        <a class="btn" href="${esc(l.url)}" target="_blank" rel="noopener">Ad ↗</a>
+      </div>
+      ${open ? `<div class="details">
+        <div class="grid">
+          ${kv("Rent", `<span class="mono">${eur(l.rent)}</span>`)}${kv("Charges", `<span class="mono">${eur(l.charges)}</span>${l.allInEstimated?" (est.)":""}`)}${kv("Floor", esc(l.floor||"Not stated"))}
+          ${kv("Energy / insulation", `Class ${esc(l.energy||"?")} / ${esc(l.insulation||"?")}`)}${kv("Heating", esc(l.heating||"Not stated"))}${kv("Built", esc(l.built||"Not stated"))}
+          ${kv("Furnished", esc(l.furnished||"Not stated"))}${kv("Elevator", yn(l.elevator))}${kv("Washer", esc(l.washer||"Not stated"))}
+          ${kv("Parking", esc(l.parking||"Not stated"))}${kv("Address", esc(l.address||l.zone))}${kv("Agency", esc(l.agency||"Not stated"))}
+        </div>
+        ${l.chargesNote ? `<p class="meta" style="margin:0">${esc(l.chargesNote)}</p>` : ""}
+        <div class="two">
+          <div><p class="label">Good</p><ul class="ul pros">${(l.pros||[]).map(x=>`<li>${esc(x)}</li>`).join("") || "<li>—</li>"}</ul></div>
+          <div><p class="label">Not so good</p><ul class="ul cons">${(l.cons||[]).map(x=>`<li>${esc(x)}</li>`).join("") || "<li>—</li>"}</ul></div>
+        </div>
+        ${(l.flags&&l.flags.length) ? `<div class="flagbox"><p class="label" style="margin:0">Watch out</p>${l.flags.map(f=>`<p>${esc(f)}</p>`).join("")}</div>` : ""}
+        ${(l.evidence&&l.evidence.length) ? `<div><p class="label">Exact words from the ad</p><div class="quotes">${l.evidence.map(q=>`<blockquote>${esc(q)}</blockquote>`).join("")}</div></div>` : ""}
+        ${(l.askAgent&&l.askAgent.length) ? `<div><p class="label">Ask the agent</p><ul class="ul ask">${l.askAgent.map(q=>`<li>${esc(q)}</li>`).join("")}</ul></div>` : ""}
+        ${typeof l.upfront === "number" ? `<div><p class="label">Cash needed to sign (estimate)</p><div class="cash">
+          <span>Deposit (max 2 months by law)</span><span>${eur(l.deposit)}</span>
+          <span>Your half of the agency fee</span><span>${eur(l.agencyFeeTenant)}</span>
+          <span>First month, all-in</span><span>${eur(l.allIn)}</span>
+          <span class="tot">Total</span><span class="tot">${eur(l.upfront)}</span></div></div>` : ""}
+        <div class="notes-area"><p class="label">Our notes</p>
+          ${S.who ? `<div class="note-row">${av(S.who)}<div><textarea data-note="${esc(l.id)}" placeholder="Your thoughts, visit date, questions…" aria-label="Your note">${esc((r.notes||{})[S.who]||"")}</textarea><div class="saved" id="saved-${esc(l.id)}"></div></div></div>` : `<button class="btn" type="button" data-act="who">Choose Tom or Amber to add a note</button>`}
+          ${other && (r.notes||{})[other] ? `<div class="note-row">${av(other)}<div class="note-read">${esc(r.notes[other])}</div></div>` : ""}
+        </div>
+      </div>` : ""}
+    </article>`;
+  }
+  function rejCard(l){
+    return `<article class="rej">
+      <div class="row spread"><b>${esc(l.title)}</b><span class="mono">${eur(l.allIn)}</span></div>
+      <span class="meta">${esc(l.zone)} · ${esc(l.size)} m² · ${energyBadge(l.energy)} · ${esc(l.source)}</span>
+      <span class="reason">${esc(l.reason || "Rejected")}</span>
+      <p>${esc(l.headline||"")}</p>
+      ${(l.evidence&&l.evidence.length) ? `<div class="quotes">${l.evidence.map(q=>`<blockquote>${esc(q)}</blockquote>`).join("")}</div>` : ""}
+      <div class="row"><a class="btn" href="${esc(l.url)}" target="_blank" rel="noopener">Check the ad ↗</a></div>
+    </article>`;
+  }
+  function briefHtml(){
+    const b = S.data.brief || {};
+    const zones = (b.zones||[]).map(z=>`<tr><td><b>${esc(z.name)}</b></td><td class="nowrap">${esc(z.commute)}</td><td>${esc(z.note)}</td></tr>`).join("");
+    const channels = (b.channels||[]).map(c=>`<tr><td><b>${esc(c.name)}</b></td><td>${esc(c.status)}</td></tr>`).join("");
+    const scale = ["A+","A","B","C","D","E","F","G","H","I"].map(c=>`<span style="${["F","G","H","I"].includes(c)?"opacity:.4;text-decoration:line-through":""}">${energyBadge(c)}</span>`).join(" ");
+    return `
+      <div class="block"><h2>What we're looking for</h2>
+        <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(210px,1fr))">${kv("Move-in", esc(b.moveTarget))}${kv("Budget", esc(b.budget))}${kv("Layout", esc(b.layout))}${kv("Furnishing", esc(b.furnishing))}</div>
+        <div><p class="label">Amber's must-haves</p><div class="chips">${(b.mustHaves||[]).map(m=>`<span class="chip">${esc(m)}</span>`).join("")}</div></div>
+        <div><p class="label">Bonus points</p><div class="chips">${(b.bonus||[]).map(m=>`<span class="chip">${esc(m)}</span>`).join("")}</div></div>
+        <div><p class="label">Automatic rejection (always with the ad's exact words)</p><ul>${(b.dealBreakers||[]).map(m=>`<li>${esc(m)}</li>`).join("")}</ul></div>
+        ${(b.softIssues||[]).length ? `<div><p class="label">Shown under Maybe, never hidden</p><ul>${b.softIssues.map(m=>`<li>${esc(m)}</li>`).join("")}</ul></div>` : ""}
+        <div><p class="label">Energy classes accepted</p><div class="chips">${scale}</div></div>
+      </div>
+      <div class="block"><h2>Areas, closest to work first</h2>
+        <div class="table-wrap"><table><thead><tr><th>Area</th><th>To work</th><th>What to expect</th></tr></thead><tbody>${zones}</tbody></table></div>
+        <div class="chips">${(b.excluded||["Gare","Bonnevoie"]).map(x=>`<span class="chip no">${esc(x)}</span>`).join("")}</div>
+      </div>
+      <div class="block"><h2>How the score works</h2>
+        <ul>
+          <li><b>Light and outdoor space (30):</b> balcony or terrace, floor, orientation, windows.</li>
+          <li><b>Budget (20):</b> full marks at €1,800 all-in or less, zero at €2,100.</li>
+          <li><b>Space (15):</b> a 1-bed from 55 m² scores highest; studios lose points.</li>
+          <li><b>Location (15):</b> commute to work, park, supermarket, transport.</li>
+          <li><b>Winter comfort (15):</b> energy class, glazing, heating.</li>
+          <li><b>Bonus (5):</b> gym nearby, quiet street, washer and dishwasher in the flat.</li>
+        </ul>
+        <p class="meta" style="margin:0">Gem: 78+. Watch: 60–77. Maybe: below 60, or a soft issue worth asking about.</p>
+      </div>
+      <div class="block"><h2>Checklist for visits</h2><ul>
+        <li>Ask for the energy certificate and last year's charges statement (décompte des charges).</li>
+        <li>Check the glazing, and look for mould in bathroom corners and behind furniture.</li>
+        <li>Find out who pays heating: your own contract, or an advance inside the charges.</li>
+        <li>Use a compass app in the living room: south and west get the most winter light.</li>
+        <li>Stand by the window for two minutes: traffic, tram, building sites.</li>
+        <li>Never pay anything before a visit and a signed lease.</li></ul></div>
+      <div class="block"><h2>Money and paperwork</h2><ul>
+        <li>Deposit is capped at 2 months' rent (law in force since August 2024). A bank rental guarantee avoids blocking cash.</li>
+        <li>The agency fee is split 50/50 by law. Your half is about 0.6 month of rent with VAT.</li>
+        <li>Plan roughly 3.5–4 months of rent in cash at signing.</li>
+        <li>File ready: IDs, employment contract, 3 payslips, an employer letter, proof of address.</li></ul></div>
+      <div class="block"><h2>Where I look</h2><div class="table-wrap"><table><tbody>${channels}</tbody></table></div></div>`;
+  }
+
+  function render(){
+    if (!S.data) return;
+    const all = (S.data.listings || []).filter(l => l.status !== "gone");
+    const active = all.filter(l => tierOf(l) !== "reject");
+    const groups = {
+      top: active.filter(l => ["gem","watch"].includes(tierOf(l))),
+      maybe: active.filter(l => tierOf(l) === "maybe"),
+      liked: active.filter(l => likedBy(l.id).length).sort((a,b) => likedBy(b.id).length - likedBy(a.id).length),
+      rejected: all.filter(l => tierOf(l) === "reject"),
+    };
+    $("#c-top").textContent = groups.top.length; $("#c-maybe").textContent = groups.maybe.length;
+    $("#c-liked").textContent = groups.liked.length; $("#c-rejected").textContent = groups.rejected.length;
+    document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.tab === S.tab)));
+    const listTab = S.tab !== "brief";
+    $("#tools").hidden = !listTab || S.tab === "rejected";
+    let html = "", count = "";
+    if (S.tab === "brief") html = briefHtml();
+    else if (S.tab === "rejected") {
+      html = `<p class="meta" style="margin:0">Only hard deal-breakers land here, each with the exact words from the ad. If something looks wrong, open the ad and tell Claude.</p>` + (groups.rejected.map(rejCard).join("") || `<div class="empty">Nothing rejected.</div>`);
+    } else {
+      const items = S.tab === "liked" ? groups.liked.filter(l => filtered([l]).length) : filtered(groups[S.tab]);
+      count = `${items.length} of ${groups[S.tab].length} shown`;
+      const empty = S.tab === "liked" ? "Nothing liked yet. Tap ♥ Like on a flat and it lands here for both of you." : "No flats match these filters.";
+      html = items.map(card).join("") || `<div class="empty">${empty}</div>`;
+    }
+    $("#result-line").textContent = count;
+    $("#list").innerHTML = html;
+    renderHero(groups);
+  }
+  function renderHero(groups){
+    const r = (S.data.reports || [])[0]; if (!r) return;
+    const both = groups.liked.filter(l => likedBy(l.id).length === 2).length;
+    const gem = groups.top.filter(l => tierOf(l) === "gem").length, watch = groups.top.length - gem;
+    $("#hero").innerHTML = `
+      <div class="row spread"><span class="eyebrow">Morning report · ${esc(fmtDate(r.date))}</span><span class="meta">Updated ${esc(new Date(S.data.updated).toLocaleString("en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}))}</span></div>
+      <p class="headline">${esc(r.headline)}</p>
+      <div class="kpis">
+        <button class="kpi gem" type="button" data-go="top"><b>${gem}</b><span>Gems</span></button>
+        <button class="kpi watch" type="button" data-go="top"><b>${watch}</b><span>Watch</span></button>
+        <button class="kpi maybe" type="button" data-go="maybe"><b>${groups.maybe.length}</b><span>Maybe</span></button>
+        <button class="kpi liked" type="button" data-go="liked"><b>${both}</b><span>♥ Both</span></button>
+        <button class="kpi reject" type="button" data-go="rejected"><b>${groups.rejected.length}</b><span>Rejected</span></button>
+      </div>
+      ${(r.notes&&r.notes.length) ? `<details class="notes-box"><summary>What the scout noticed (${r.notes.length})</summary><ul class="notes">${r.notes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul></details>` : ""}`;
+  }
+  function renderBanner(){
+    const el = $("#banner");
+    if (!S.data || S.mode === "shared" || S.mode === "connecting") { el.innerHTML = ""; renderSync(); return; }
+    el.innerHTML = `<div class="banner"><span aria-hidden="true">●</span><div><b>Likes and notes are saved on this phone only.</b> ${CFG.firebase ? "The shared list did not connect. Check your connection, then reload." : "Sharing between Tom and Amber is being set up."}</div></div>`;
+    renderSync();
+  }
+  function shortWhen(d){
+    const now = new Date(), t = d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
+    const a = new Date(now.getFullYear(), now.getMonth(), now.getDate()), b = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const diff = Math.round((a - b) / 864e5);
+    if (diff === 0) return "Today " + t;
+    if (diff === 1) return "Yesterday " + t;
+    return d.toLocaleDateString("en-GB",{day:"numeric",month:"short"}) + " " + t;
+  }
+  function syncInfo(){
+    const at = S.sync && S.sync.at ? new Date(S.sync.at) : null;
+    if (!at || isNaN(at)) return {cls:"bad", short:"No data", long:"no update found yet", state:"Problem: no update found. Tell Claude."};
+    const h = (Date.now() - at.getTime()) / 36e5;
+    const cls = h <= 26 ? "on" : h <= 50 ? "" : "bad";
+    const state = h <= 26 ? "Working: the morning scan ran." : h <= 50 ? "Late: no scan in the last 26 hours." : "Problem: no scan for 2 days or more. Tell Claude.";
+    return {cls, short: shortWhen(at), long: at.toLocaleString("en-GB",{weekday:"long",day:"numeric",month:"long",hour:"2-digit",minute:"2-digit"}), state};
+  }
+  function renderSync(){
+    const s = syncInfo();
+    $("#sync-dot").className = "dot " + s.cls; $("#sync-txt").textContent = s.short;
+    $("#sync").setAttribute("aria-label", "Last update: " + s.long);
+  }
+  function openSync(){
+    const s = syncInfo();
+    const likes = S.mode === "shared" ? "Shared by Tom and Amber ✓" : S.mode === "connecting" ? "Connecting…" : "Saved on this phone only";
+    const back = document.createElement("div"); back.className = "sheet-back";
+    back.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-label="Sync status">
+      <h3><span class="dot ${s.cls}" style="display:inline-block;margin-right:8px"></span>${esc(s.state)}</h3>
+      <div class="sync-rows">
+        <span>Last scan</span><span>${esc(s.long)}</span>
+        <span>New today</span><span>${esc(S.sync && S.sync.newToday != null ? S.sync.newToday : "–")}</span>
+        <span>Likes, notes</span><span>${esc(likes)}</span>
+        <span>Next scan</span><span>Every morning, online by about 08:30</span>
+      </div>
+      <button class="btn primary" type="button" id="sync-refresh">Check for a new update</button>
+      <button class="btn" type="button" id="sync-forget">Forget the code on this phone</button>
+      <button class="btn" type="button" id="sync-close">Close</button></div>`;
+    document.body.appendChild(back);
+    const close = () => back.remove();
+    back.addEventListener("click", e => { if (e.target === back) close(); });
+    $("#sync-close", back).addEventListener("click", close);
+    $("#sync-forget", back).addEventListener("click", () => { store.set("fs-pin", null); toast("Code forgotten on this phone"); close(); });
+    $("#sync-refresh", back).addEventListener("click", async () => {
+      const b = $("#sync-refresh", back); b.textContent = "Checking…"; b.disabled = true;
+      try { const before = S.sync && S.sync.at; await refreshData(); close(); toast(S.sync && S.sync.at !== before ? "New update loaded" : "Already up to date"); }
+      catch(e) { b.textContent = "Could not check. Try again"; b.disabled = false; }
+    });
+  }
+
+  // ---------- events ----------
+  $("#tabs").addEventListener("click", e => { const t = e.target.closest(".tab"); if (!t) return; S.tab = t.dataset.tab; store.set("fs-tab", S.tab); render(); });
+  $("#hero").addEventListener("click", e => { const k = e.target.closest("[data-go]"); if (!k) return; S.tab = k.dataset.go; store.set("fs-tab", S.tab); render(); $("#tabs").scrollIntoView({behavior:"smooth", block:"start"}); });
+  ["zone","type","max","sort"].forEach(k => $("#f-"+k).addEventListener("change", e => { S.filters[k] = e.target.value; store.set("fs-filters", S.filters); render(); }));
+  $("#list").addEventListener("click", e => {
+    const b = e.target.closest("[data-act]"); if (!b) return;
+    const id = b.dataset.id, l = (S.data.listings||[]).find(x => x.id === id);
+    if (b.dataset.act === "like") toggleLike(id);
+    else if (b.dataset.act === "share" && l) shareListing(l);
+    else if (b.dataset.act === "toggle") { S.open.has(id) ? S.open.delete(id) : S.open.add(id); render(); }
+    else if (b.dataset.act === "who") openWho();
+  });
+  $("#list").addEventListener("input", e => { const t = e.target.closest("textarea[data-note]"); if (!t) return; const st = document.getElementById("saved-" + t.dataset.note); if (st) st.textContent = "…"; saveNote(t.dataset.note, t.value.slice(0, 1000), st || {}); });
+
+  // ---------- data (encrypted with the access code) ----------
+  const unb64 = (s) => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  let ENV = null;
+  async function fetchEnvelope(){
+    const r = await fetch((CFG.dataUrl || "data.enc.json") + "?t=" + Date.now(), {cache:"no-store"});
+    if (!r.ok) throw new Error("data"); return r.json();
+  }
+  async function decryptEnv(pin, env){
+    const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(pin), "PBKDF2", false, ["deriveKey"]);
+    const key = await crypto.subtle.deriveKey({name:"PBKDF2", salt: unb64(env.salt), iterations: env.iter, hash:"SHA-256"}, base, {name:"AES-GCM", length:256}, false, ["decrypt"]);
+    const pt = await crypto.subtle.decrypt({name:"AES-GCM", iv: unb64(env.iv)}, key, unb64(env.ct));
+    return JSON.parse(new TextDecoder().decode(pt));
+  }
+  function applyData(d){
+    S.data = d;
+    const sel = $("#f-zone"); sel.querySelectorAll("option:not([value=''])").forEach(o => o.remove());
+    const zones = [...new Set((d.listings||[]).map(l => l.zone))].sort();
+    sel.insertAdjacentHTML("beforeend", zones.map(z => `<option value="${esc(z)}">${esc(z)}</option>`).join(""));
+    sel.value = zones.includes(S.filters.zone) ? S.filters.zone : "";
+    render(); renderBanner();
+  }
+  async function refreshData(){
+    const env = await fetchEnvelope();
+    if (S.sync && env.sync && env.sync.at === S.sync.at) return;
+    const d = await decryptEnv(S.pin, env); ENV = env; S.sync = env.sync || null; applyData(d);
+  }
+
+  // ---------- Firebase (shared likes and notes) ----------
+  async function startShared(){
+    if (!CFG.firebase) { S.mode = "local"; renderBanner(); return false; }
+    S.mode = "connecting"; renderBanner();
+    try {
+      const v = "10.12.2", base = "https://www.gstatic.com/firebasejs/" + v + "/";
+      const [{initializeApp}, auth, fsm] = await Promise.all([import(base+"firebase-app.js"), import(base+"firebase-auth.js"), import(base+"firebase-firestore.js")]);
+      const app = initializeApp(CFG.firebase);
+      const cred = await auth.signInAnonymously(auth.getAuth(app));
+      const db = fsm.getFirestore(app);
+      const memberRef = fsm.doc(db, "members", cred.user.uid);
+      let member = null; try { member = await fsm.getDoc(memberRef); } catch(e) {}
+      if (!member || !member.exists()) await fsm.setDoc(memberRef, {code: S.pin, who: S.who || "tom"});
+      S.fs = { save: (id, patch) => fsm.setDoc(fsm.doc(db, "reactions", id), Object.assign({updatedAt: fsm.serverTimestamp()}, patch), {merge:true}) };
+      // Carry over likes and notes made on this phone before sharing was on
+      if (!store.get("fs-migrated", false)) {
+        const local = store.get("fs-reactions", {});
+        for (const [id, r] of Object.entries(local)) { try { await S.fs.save(id, {likes: r.likes || {}, notes: r.notes || {}}); } catch(e) {} }
+        store.set("fs-migrated", true);
+      }
+      fsm.onSnapshot(fsm.collection(db, "reactions"), snap => {
+        const next = {}; snap.forEach(d => { const x = d.data(); next[d.id] = {likes: x.likes || {}, notes: x.notes || {}}; });
+        S.reactions = next; S.mode = "shared"; renderBanner();
+        const active = document.activeElement; if (active && active.tagName === "TEXTAREA") return; render();
+      }, () => { S.mode = "local"; renderBanner(); toast("Lost the connection to the shared list."); });
+      return true;
+    } catch(e) { S.mode = "local"; renderBanner(); return false; }
+  }
+
+  // ---------- boot: code screen ----------
+  S.who = store.get("fs-who", null); S.tab = store.get("fs-tab", "top"); S.filters = Object.assign(S.filters, store.get("fs-filters", {}));
+  const h = (location.hash||"").slice(1); if (["top","maybe","liked","rejected","brief"].includes(h)) S.tab = h;
+  S.reactions = store.get("fs-reactions", {});
+  renderWho();
+  ["zone","type","max","sort"].forEach(k => { const el = $("#f-"+k); if (el && S.filters[k] != null) el.value = S.filters[k]; });
+
+  async function unlock(pin, silent){
+    if (!ENV) return false;
+    if (!silent) $("#pin-err").textContent = "Opening…";
+    try {
+      const d = await decryptEnv(pin, ENV);
+      S.pin = pin;
+      if (silent || $("#pin-remember").checked) store.set("fs-pin", pin);
+      applyData(d);
+      $("#gate").hidden = true; document.body.classList.remove("locked");
+      if (!S.who) openWho();
+      startShared();
+      return true;
+    } catch(e) {
+      if (silent) store.set("fs-pin", null);
+      else { $("#pin-err").textContent = "Wrong code. Try again."; $("#pin").select(); }
+      return false;
+    }
+  }
+  $("#pin-go").addEventListener("click", () => { const p = $("#pin").value.trim(); if (p) unlock(p, false); });
+  $("#pin").addEventListener("keydown", e => { if (e.key === "Enter") { const p = $("#pin").value.trim(); if (p) unlock(p, false); } });
+  (async () => {
+    try { ENV = await fetchEnvelope(); S.sync = ENV.sync || null; }
+    catch(e) { $("#gate-sync").textContent = "The data didn't load. Check your connection and reload."; return; }
+    const s = syncInfo();
+    $("#gate-sync").innerHTML = `<span class="dot ${s.cls}"></span>Last update: ${esc(s.short)}`;
+    renderSync();
+    const saved = store.get("fs-pin", null);
+    if (saved && await unlock(saved, true)) return;
+    $("#pin").focus();
+  })();
+})();
+</script>
+
+</body>
+</html>
